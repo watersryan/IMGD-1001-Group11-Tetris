@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 public class Piece : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Piece : MonoBehaviour
 
     public float stepDelay = 1f;
     public float lockDelay = 0.5f;
+    private float previousTime;
+    public float fallTime = 0.8f;
 
     private float stepTime;
     private float locktime;
@@ -42,13 +45,11 @@ public class Piece : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            FindObjectOfType<AudioManager>().Play("RotateLeft");
             Rotate(-1);
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            FindObjectOfType<AudioManager>().Play("RotateRight");
             Rotate(1);
         }
         if (Input.GetKeyDown(KeyCode.A))
@@ -59,14 +60,14 @@ public class Piece : MonoBehaviour
             Move(Vector2Int.right);
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Time.time - previousTime > (Input.GetKey(KeyCode.S) ? fallTime / 10 : fallTime))
         {
             Move(Vector2Int.down);
+            previousTime = Time.time;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            FindObjectOfType<AudioManager>().Play("HardDrop");
             HardDrop();
         }
 
@@ -75,18 +76,9 @@ public class Piece : MonoBehaviour
             Step();
         }
         this.board.Set(this);
-
-         //returnToMenu();
     }
 
-    /*public void returnToMenu()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            FindObjectOfType<AudioManager>().Play("ButtonPress");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-        }
-    }*/
+
 
     private void Step() {
         this.stepTime = Time.time + this.stepDelay;
@@ -108,14 +100,12 @@ public class Piece : MonoBehaviour
 
     private void HardDrop()
     {
-        ScreenShakeController.instance.StartShake(.2f, .25f);
-
         while (Move(Vector2Int.down))
         {
             continue;
         }
+
         Lock();
-        
     }
     private bool Move(Vector2Int translation)
     {

@@ -29,6 +29,12 @@ public class ScoreBoard : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        PlayerPrefs.DeleteKey("HighScore");
+        highScore.text = Score.ToString(); ;
+    }
+
 }
 
 //After this go back to the main window and right click in the hierarchy menu
