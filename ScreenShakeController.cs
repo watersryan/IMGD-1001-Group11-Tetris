@@ -18,7 +18,7 @@ public class ScreenShakeController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            StartShake(.1f, .2f);
+            StartShake(.2f, .25f);
         }
     }
 
@@ -27,11 +27,14 @@ public class ScreenShakeController : MonoBehaviour
         if (shakeTimeRemaining > 0)
         {
             shakeTimeRemaining -= Time.deltaTime;
-
-            float xAmount = Random.Range(-1f, 1f) * shakePower;
             float yAmount = Random.Range(0f, 5f) * shakePower;
+            transform.position += new Vector3(0f, yAmount, -10f);
+        }
 
-            transform.position += new Vector3(0f, yAmount, 0f);
+        if (shakeTimeRemaining < 0)
+        {
+            float yAmount = Random.Range(0f, 5f) * shakePower;
+            transform.position = new Vector3(0f, 0f, -10f);
         }
     }
 
